@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.idea
+.Python
+env/
+db-data/
+build/
+develop-eggs/
+dist/
+downloads/
