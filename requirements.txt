@@ -1,4 +1,6 @@
 # pip install -r requirements.txt (Python 2) / pip3 install -r requirements.txt (Python 3)
+# pg_config is in postgresql-devel (libpq-dev in Debian/Ubuntu, libpq-devel on Centos/Cygwin/Babun)
+# apt-get install libpq-dev
 psycopg2~=2.8.5
 requests~=2.24.0
 beautifulsoup4~=4.9.1

@@ -3,7 +3,7 @@ import psycopg2
 from datetime import datetime
 import time
 
-conn = psycopg2.connect("host=127.0.0.1 dbname=prices port=5432 user=postgres password=")
+conn = psycopg2.connect("host=127.0.0.1 dbname=prices port=5432 user=postgres password=postgres")
 cursor = conn.cursor()
 
 
