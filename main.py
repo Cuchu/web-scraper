@@ -75,6 +75,7 @@ def update_variations():
                    order by price.productid desc;"
 
     cursor.execute(variations)
+    print(f"Cambio de precios: {cursor.rowcount} / día {today}")
     conn.commit()
     return
 
