@@ -23,6 +23,8 @@ services:
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_ADMIN_SECRET: yourpassword
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: role
+      HASURA_GRAPHQL_ENABLE_ALLOWLIST: "true"
 volumes:
   my_dbdata:
     driver: local
