@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" type="application/javascript"></script>
+    <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Title</title>
+
+
+</head>
+<body class="site">
+
+<main id="cotoprices" class="gradient-border site-content">
+    <div class="main gradient-border">
+
+    <h1>
+        Precios del COTO
+        <span>Listado de precios del coto</span>
+    </h1>
+
+    <template v-if="prices.length">
+        <div class="infoMessage">Productos que cambiaron el precio en la fecha {{this.filterDate}}</div>
+        <ul class="header">
+            <li>
+                <span class="label align-left">Producto</span>
+                <span class="label align-center">Anterior</span>
+                <span class="label align-center">Nuevo</span>
+                <span class="label align-center">Diferencia</span>
+            </li>
+        </ul>
+
+        <div class="parent">
+            <vue-scroll :ops="ops">
+                <div class="child">
+                    <transition-group name="cotoprices" tag="ul" class="priceslist">
+                        <li v-for="item in prices" v-bind:key="item.productshopid">
+                            <span class="label align-left">
+                                <a v-bind:href="item.product.url" target="_blank">{{item.product.name}}</a>
+                            </span>
+                            <span class="label align-center prev-price">{{twoDecimals(item.price - item.diff)}}</span>
+                            <span class="label align-center"><b>{{twoDecimals(item.price)}}</b></span>
+                            <span class="label align-center" v-bind:class="getDiffClass(item.diff)">{{twoDecimals(item.diff)}}</span>
+                        </li>
+                    </transition-group>
+                </div>
+            </vue-scroll>
+        </div>
+    </template>
+
+    <template v-if="prices.length == 0">
+        <div class="emptylist">
+            Parece que no se encontraron productos con cambio de precio en la fecha {{this.filterDate}}
+        </div>
+    </template>
+
+    </div>
+</main>
+
+<footer>
+    Made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://github.com/Cuchu">Maxi Schvindt</a>
+</footer>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/vuescroll"></script>
+<script src="index.js" type="application/javascript"></script>
+
