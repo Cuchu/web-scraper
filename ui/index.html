@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="images/favicon.ico">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-    <link rel="manifest" href="images/site.webmanifest">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" type="application/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"
+            type="application/javascript"></script>
     <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
-<!--    <script src="datepicker.js" type="application/javascript"></script>-->
 
     <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet" type="text/css" />
-<!--    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker3.min.css">-->
-    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet"
+          type="text/css"/>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <link href="input.css" rel="stylesheet" type="text/css"/>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <title>Title</title>
+    <title>Precios del COTO</title>
 
 
 </head>
@@ -33,55 +32,138 @@
                 <span>Listado de precios del coto</span>
             </h1>
         </div>
-
-        <div class="div-datepicker">
-            <div class="div-datepicker-btn">
-                <button class="btn-datepicker" @click="openPicker"><img src="images/icons8-calendar-red.png"></button>
-            </div>
-            <vuejs-datepicker class="custom-datepicker" @selected="dateSelected" ref="programaticOpen"
-                              :value="datepicker.date" :disabled-dates="datepicker.disabledDates"
-                              :language="datepicker.language.es"></vuejs-datepicker>
+        <div class="menu-options">
+            <span class="label-option" v-bind:class="{ 'active': showVariations }" @click="showVariationsOption">Ver variaciones de precios</span>
+            <span style="margin: 0px 10px">|</span>
+            <span class="label-option" v-bind:class="{ 'active': showSearch }"
+                  @click="showSearchOption">Buscar producto</span>
         </div>
 
+        <template v-if="showVariations">
 
-        <template v-if="prices.length">
-            <div class="infoMessage">Productos que cambiaron el precio en la fecha {{this.filterDate}}</div>
-            <ul class="header">
-                <li>
-                    <span class="label align-left">Producto</span>
-                    <span class="label align-center">Nuevo</span>
-                    <span class="label align-center">Anterior</span>
-                    <span class="label align-center label-difference">Diferencia $ (%)</span>
-                </li>
-            </ul>
+            <div class="div-datepicker">
+                <div class="div-datepicker-btn">
+                    <button class="btn-datepicker" @click="openPicker"><img src="./images/icons8-calendar-red.png">
+                    </button>
+                </div>
+                <vuejs-datepicker class="custom-datepicker" @selected="dateSelected" ref="programaticOpen"
+                                  :value="datepicker.date" :disabled-dates="datepicker.disabledDates"
+                                  :language="datepicker.language.es"></vuejs-datepicker>
+            </div>
 
-            <div class="parent">
-                <vue-scroll :ops="ops">
-                    <div class="child">
-                        <transition-group name="cotoprices" tag="ul" class="priceslist">
-                            <li v-for="item in prices" v-bind:key="item.productshopid">
+            <template v-if="prices.length">
+                <div class="infoMessage">Productos que cambiaron el precio en la fecha {{this.filterDate}}</div>
+                <ul class="header">
+                    <li>
+                        <span class="label align-left">Producto</span>
+                        <span class="label align-center">Nuevo</span>
+                        <span class="label align-center">Anterior</span>
+                        <span class="label align-center label-difference">Diferencia $ (%)</span>
+                    </li>
+                </ul>
+
+                <div class="parent">
+                    <vue-scroll :ops="ops">
+                        <div class="child">
+                            <transition-group name="cotosearch" tag="ul" class="priceslist">
+                                <li v-for="item in prices" v-bind:key="item.productshopid">
                             <span class="label label-product align-left">
                                 <a v-bind:href="item.product.url" target="_blank">{{item.product.name}}</a>
                             </span>
-                                <span class="label align-center">{{formatPrice(item.price)}}</span>
-                                <span class="label align-center prev-price">{{formatPrice(item.price - item.diff)}}</span>
-                                <span class="label align-center label-difference"
-                                      v-bind:class="getDiffClass(item.diff)">
+                                    <span class="label align-center">{{formatPrice(item.price)}}</span>
+                                    <span class="label align-center prev-price">{{formatPrice(item.price - item.diff)}}</span>
+                                    <span class="label align-center label-difference"
+                                          v-bind:class="getDiffClass(item.diff)">
                                     {{formatPrice(item.diff)}} ({{getPercent(item.price, item.diff)}})
                                 </span>
-                            </li>
-                        </transition-group>
+                                </li>
+                            </transition-group>
+                        </div>
+                    </vue-scroll>
+                </div>
+            </template>
+
+            <template v-if="prices.length == 0">
+                <div class="emptylist">
+                    Parece que no se encontraron productos con cambio de precio en la fecha {{this.filterDate}}
+                </div>
+            </template>
+
+        </template>
+
+
+        <template v-if="showSearch">
+            <div class="div-search clearfix" style="text-align: center">
+
+                <fieldset class="field-container" v-bind:class="{ 'is-type': searching }">
+                    <input type="text" placeholder="Buscar..." class="field"
+                           v-on:focus="searching = true"
+                           v-on:blur="searching = false"
+                           v-model.text="search"
+                           v-on:keyup.enter="searchProducts"
+                           v-on:change="searchProducts"/>
+                    <div class="icons-container">
+                        <div class="icon-search"></div>
+                        <div class="icon-close" @click="cleanFilter">
+                            <div class="x-up"></div>
+                            <div class="x-down"></div>
+                        </div>
                     </div>
-                </vue-scroll>
+                </fieldset>
+                <div class="emptylist" style="margin-top: 30px">
+                    Completa el campo y presiona enter or tab
+                </div>
             </div>
-        </template>
 
-        <template v-if="prices.length == 0">
-            <div class="emptylist">
-                Parece que no se encontraron productos con cambio de precio en la fecha {{this.filterDate}}
-            </div>
-        </template>
 
+            <template v-if="results.length">
+                <div class="infoMessage">Productos que coinciden con '{{this.search}}' y los últimos 10 precios
+                    registrados
+                </div>
+
+                <div class="parent">
+                    <vue-scroll :ops="ops">
+                        <div class="child">
+                            <transition-group name="cotoprices" tag="ul" class="priceslist">
+                                <li v-for="item in results" v-bind:key="item.productshopid" style="">
+                                    <div class="clearfix" style="width: 100%">
+
+                                        <div style="width: 100%">
+                                    <span class="label label-product align-left">
+                                        <a v-bind:href="item.url" target="_blank">{{item.name}}</a>
+                                    </span>
+                                        </div>
+                                        <br/>
+                                        <div style="width: 100%">
+                                            <div v-for="price in item.prices"
+                                                 style="
+                                          float: left; margin: 5px 0px;
+                                          padding: 0px 5px;
+                                          border-right: 1px solid #1D1F20;
+                                          text-align: center">
+                                        <span class="label label-date align-center">
+                                            {{formatDate(price.date)}}
+                                        </span>
+                                                <br/>
+                                                <span class="label align-center">
+                                            {{formatPrice(price.price)}}
+                                        </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </transition-group>
+                        </div>
+                    </vue-scroll>
+                </div>
+            </template>
+
+            <template v-if="(results.length == 0)">
+                <div class="emptylist">
+                    De momento, el listado se encuentra vacío.
+                </div>
+            </template>
+        </template>
     </div>
 </main>
 

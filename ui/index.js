@@ -6,8 +6,14 @@ var cotoprices = new Vue({
         vuejsDatepicker
     },
     data: {
+        showVariations: true,
+        showSearch: false,
+        search: '',
+        searching: false,
         prices: [],
+        results: [],
         filterDate: dayjs().format("YYYY-MM-DD"),
+        today:dayjs().format("DD/MM"),
         ops: {
             rail: {
                 opacity: '0.2',
@@ -69,6 +75,27 @@ var cotoprices = new Vue({
                 .then(res => {this.prices = res.data.variation;})
                 .catch(console.error);
         },
+        getPrices: function(){
+            let query = 'query MyQuery ($search:String){' +
+                '   product(limit: 100, where: {name: {_ilike: $search}}) {' +
+                '       name,productshopid,url' +
+                '       prices(limit: 10, order_by: {date: desc}) {price,date}' +
+                '   }' +
+                '}';
+
+            const url = "http://ec2-3-17-64-92.us-east-2.compute.amazonaws.com:8085/v1/graphql";
+
+            const opts = {
+                method: "POST",
+                headers: { "Content-Type": "application/json"},
+                body: JSON.stringify({ query: query, variables: {"search":"%"+this.search+"%"} })
+            };
+
+            fetch(url, opts)
+                .then(res => res.json())
+                .then(res => {this.results = res.data.product;console.log(this.results);})
+                .catch(console.error);
+        },
         formatPrice: function(number) {
             let val = (number/1).toFixed(2);
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -96,6 +123,28 @@ var cotoprices = new Vue({
             this.prices = [];
             this.filterDate = dayjs(date).format("YYYY-MM-DD");
             this.getVariations();
+        },
+        searchProducts: function(evt) {
+            this.results = [];
+            this.search = this.search.trim();
+            if(this.search != '') {
+                this.getPrices();
+            }
+        },
+        formatDate: function(date) {
+            return dayjs(date).format("DD/MM");
+        },
+        cleanFilter: function() {
+            this.results = [];
+            this.search = "";
+        },
+        showVariationsOption: function() {
+            this.showSearch = false;
+            this.showVariations = true;
+        },
+        showSearchOption: function() {
+            this.showVariations = false;
+            this.showSearch = true;
         }
     }
 });

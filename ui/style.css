@@ -2,7 +2,7 @@
 * {
     margin:0;
     padding:0;
-    box-sizing:border-box;
+    /*box-sizing:border-box;*/
 }
 body {
     background:#1D1F20;
@@ -337,8 +337,31 @@ div.custom-datepicker input {
     /*text-align: center;*/
     width: 300px;
     margin: 0 auto;
+    margin-top: 20px;
 }
 
 .div-datepicker-btn {
     text-align: center;
+}
+
+.div-search {
+    height: 100px;
+    margin-top: 20px;
+}
+
+.label-date {
+    font-size: 12px;
+}
+
+.menu-options {
+    padding-left: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,.3);
+}
+
+.label-option {
+    cursor: pointer;
+}
+
+.label-option.active {
+    background-color: #F92672;
 }
